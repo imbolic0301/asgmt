@@ -1,5 +1,6 @@
 package com.example.service;
 
+import com.example.exception.CommonExceptionTypes;
 import com.example.persistence.entity.UserEntity;
 import com.example.persistence.mapper.UserMapper;
 import com.example.web.dto.UserDto;
@@ -21,7 +22,7 @@ public class UserService {
     public void addNewUser(UserDto.Request.SignUp request) {
         var newUser = UserEntity.initFrom(request);
         var exist = userMapper.findByEmail(request.getEmail());
-//        if(exist != null) throw new Exception("");
+        if(exist != null) throw CommonExceptionTypes.initCustomExceptionWith("사용 불가능한 이메일입니다.");
         userMapper.createNewUser(newUser);
     }
 
