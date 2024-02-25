@@ -1,0 +1,7 @@
+# DB information
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/asgmt?autoReconnect=true
+    username: root
+    password: root
