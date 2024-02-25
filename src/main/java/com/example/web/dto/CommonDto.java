@@ -5,10 +5,13 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.http.ResponseEntity;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -38,6 +41,13 @@ public class CommonDto {
         return ResponseEntity.status(exception.getResultStatus()).body(ErrorResponse.from(exception));
     }
 
+    /**
+     * 정상 호출에 대해, 데이터가 있는 리스트형의 응답을 생성한다.
+     */
+    public static <T> ResponseEntity<ListResponse<T>> responseFrom(List<T> data, PageRequest pageRequest) {
+        return ResponseEntity.ok(ListResponse.from(data, pageRequest));
+    }
+
 
     // 공용 JSON body 를 만들기 위한 내부 데이터 클래스
     @ToString
@@ -53,6 +63,63 @@ public class CommonDto {
                     .build();
         }
 
+    }
+
+    // 공용 JSON body 를 만들기 위한 내부 데이터 클래스
+    @ToString
+    @Builder
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @Getter
+    public static class ListResponse<T> {
+        private final List<T> list;
+        private final PageInfo pageInfo;
+
+        public static <T> ListResponse<T> from(List<T> list, PageRequest pageRequest) {
+            return ListResponse.<T>builder()
+                    .list(list)
+                    .pageInfo(
+                        PageInfo.builder()
+                                .cursorPage(pageRequest.getCursorPage())
+                                .pageSize(pageRequest.getPageSize())
+                                .totalCount(
+                                        (pageRequest.getTotalCount() != null)
+                                                ? pageRequest.getTotalCount()
+                                                : list.size()
+                                )
+                                .build()
+                    )
+                    .build();
+        }
+
+    }
+
+    /**
+     * 조회 API 에서 페이징 관련 변수를 관리하기 위한 인터페이스
+     */
+    public interface PageRequest {
+        Integer getCursorPage();
+        Integer getPageSize();
+
+        // LIMIT 쿼리나 CDP API 의 파라미터로 쓰이는 offset 의 계산식
+        default Integer getOffset() {
+            return (getCursorPage()-1) * getPageSize();
+        }
+        // CDP API 의 파라미터로 쓰이는 limit 의 계산식
+        default Integer getLimit() {
+            return getPageSize();
+        }
+        // totalCount 는 선택적으로 구현한다.
+        default Long getTotalCount() { return 0L; }
+    }
+
+    @Getter
+    @ToString
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @Builder(access = AccessLevel.PRIVATE)
+    public static class PageInfo {
+        private Long totalCount;
+        private Integer cursorPage;
+        private Integer pageSize;
     }
 
     @Builder
