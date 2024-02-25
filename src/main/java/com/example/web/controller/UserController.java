@@ -23,7 +23,6 @@ public class UserController {
     // 신규 회원 가입
     @PostMapping
     public ResponseEntity<?> signUp(@RequestBody UserDto.Request.SignUp request) {
-        // 요청의 입력값 검증
         request.validate();
         userService.addNewUser(request);
         return CommonDto.emptyResponse();
