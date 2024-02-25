@@ -8,15 +8,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.ErrorResponse;
 
-import java.util.List;
 import java.util.Map;
 
 /**
  * 공용 Response Body
  */
-public class ResponseDto {
+public class CommonDto {
 
     /**
      * 정상 호출에 대해, 데이터가 있는 공용 응답을 생성한다.
@@ -37,7 +35,7 @@ public class ResponseDto {
      * 커스텀 예외로부터 오류 관련 공용 응답을 생성한다.
      */
     public static ResponseEntity<?> exceptionResponseFrom(CustomException exception) {
-        return ResponseEntity.status(exception.getResultStatus()).body(exception.getErrorMessage());
+        return ResponseEntity.status(exception.getResultStatus()).body(ErrorResponse.from(exception));
     }
 
 
@@ -55,6 +53,20 @@ public class ResponseDto {
                     .build();
         }
 
+    }
+
+    @Builder
+    @Getter
+    public static class ErrorResponse {
+        private final String errorCode;
+        private final String errorMessage;
+
+        public static ErrorResponse from(CustomException exception) {
+            return ErrorResponse.builder()
+                    .errorCode(exception.getErrorCode())
+                    .errorMessage(exception.getErrorMessage())
+                    .build();
+        }
     }
 
 }
