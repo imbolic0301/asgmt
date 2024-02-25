@@ -32,6 +32,7 @@ public enum CommonExceptionTypes {
                 .build();
     }
 
+    // 프론트에서 오류 메세지를 그대로 alert 에 쓸 수 있게 커스텀 오류 메세지를 지정해준다.
     public static CustomException initCustomExceptionWith(String customErrorMessage) {
         return CustomException.builder()
                 .resultStatus(HttpStatus.BAD_REQUEST)
