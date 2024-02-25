@@ -1,6 +1,7 @@
 package com.example.web.controller;
 
 import com.example.service.UserService;
+import com.example.web.dto.ResponseDto;
 import com.example.web.dto.UserDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +24,7 @@ public class UserController {
         // 요청의 입력값 검증
         request.validate();
         userService.addNewUser(request);
-        return ResponseEntity.ok("");
+        return ResponseDto.emptyResponse();
     }
 
 }
