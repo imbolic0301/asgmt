@@ -1,9 +1,9 @@
 package com.example.service;
 
 import com.example.exception.CommonExceptionTypes;
-import com.example.persistence.entity.BookEntity;
 import com.example.persistence.entity.RentHistoryEntity;
 import com.example.persistence.mapper.RentMapper;
+import com.example.web.dto.RentDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,6 +22,13 @@ import java.util.concurrent.TimeUnit;
 public class RentService {
 
     private final RentMapper rentMapper;
+
+
+    // 대여 가능한 책 목록 조회
+    @Transactional(readOnly = true)
+    public List<RentDto.BookResponse> findBooksBy(RentDto.BookListRequest request) {
+        return rentMapper.findAvailableBooks(request.getOrderType(), request.getOffset(), request.getLimit());
+    }
 
     // 책 대여 처리
     @Transactional(readOnly = false, isolation = Isolation.READ_COMMITTED, rollbackFor = Exception.class)
@@ -52,9 +59,5 @@ public class RentService {
          executor.shutdown(); // 작업이 끝난 후에는 executor를 종료해주어야 합니다.
     }
 
-    public List<BookEntity> findBooksBy() {
-
-        return null;
-    }
 
 }

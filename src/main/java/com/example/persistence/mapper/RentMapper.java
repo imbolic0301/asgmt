@@ -16,8 +16,35 @@ import java.util.List;
 public interface RentMapper {
     // 대여 가능한 책 조회
     @Select("""
+            <script>
+                SELECT
+                	u.name AS userName
+                    , b.id
+                    , b.title
+                    , b.isbn
+                    , b.price
+                    , b.created_datetime AS createdDateTime
+                FROM book_info b
+                	INNER JOIN user_info u ON b.user_id = u.id
+                    LEFT JOIN (SELECT COUNT(*) AS rentCnt, book_id FROM rent_history GROUP BY book_id) cnt 
+                        ON cnt.book_id = b.id
+                WHERE b.is_del = 0 AND b.is_rentable = 1
+                ORDER BY
+                    <choose>
+                        <when test='orderType == 1'>
+                	        cnt.rentCnt DESC
+                        </when>
+                        <when test='orderType == 2'>
+                            b.price ASC
+                        </when>
+                        <otherwise>
+                	        b.created_datetime DESC
+                        </otherwise>
+                    </choose>
+                LIMIT #{offset}, #{limit}
+            </script>
             """)
-    List<BookEntity> findAvailableBooks(Integer orderType);
+    List<RentDto.BookResponse> findAvailableBooks(Integer orderType, Integer offset, Integer limit);
     // 대여할 책 조회
     @Select("""
             SELECT

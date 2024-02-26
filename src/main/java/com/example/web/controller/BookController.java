@@ -48,7 +48,9 @@ public class BookController {
     // 도서 목록 조회
     @GetMapping
     public ResponseEntity<?> findRentalBooks(RentDto.BookListRequest request) {
-        return CommonDto.responseFrom("");
+        // TODO 세션 구현
+        var books = rentService.findBooksBy(request);
+        return CommonDto.responseFrom(books, request);
     }
 
 }

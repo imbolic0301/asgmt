@@ -6,6 +6,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+
 public class RentDto {
 
     @Getter
@@ -26,6 +28,7 @@ public class RentDto {
         private String isbn;
         private Integer price;
         private String userName;
+        private LocalDateTime createdDateTime;
     }
 
 }
