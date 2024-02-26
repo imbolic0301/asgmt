@@ -44,12 +44,10 @@ public class RentService {
     private void asyncReturnBookAfterRental(Long bookId) {
         ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
         Integer delayTime = ThreadLocalRandom.current().nextInt(15, 20);
-        System.out.println("delayTime : " +delayTime);
         executor.schedule(() -> {
             // 일정 시간이 지난 후 실행될 코드
             // 예시: Mapper의 특정 메소드 호출
             rentMapper.changeRentalStatus(bookId, true);
-            System.out.println("updated");
         }, delayTime, TimeUnit.SECONDS); // 15~20초 후에 실행
          executor.shutdown(); // 작업이 끝난 후에는 executor를 종료해주어야 합니다.
     }
