@@ -23,4 +23,14 @@ public class ConsignmentHistoryEntity {
     private String title;
     private String isbn;
     private Integer price;
+
+    public static ConsignmentHistoryEntity from(BookEntity book) {
+        return ConsignmentHistoryEntity.builder()
+                .userId(book.getUserId())
+                .bookId(book.getId())
+                .title(book.getTitle())
+                .isbn(book.getIsbn())
+                .price(book.getPrice())
+                .build();
+    }
 }

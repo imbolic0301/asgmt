@@ -1,5 +1,6 @@
 package com.example.persistence.entity;
 
+import com.example.web.dto.ConsignmentDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,4 +23,13 @@ public class BookEntity {
     private String title;
     private String isbn;
     private Integer price;
+
+    public static BookEntity fromValidated(ConsignmentDto.Request request) {
+        return BookEntity.builder()
+                .userId(request.getUserId())
+                .isbn(request.getIsbn())
+                .title(request.getTitle())
+                .price(request.getPrice())
+                .build();
+    }
 }
