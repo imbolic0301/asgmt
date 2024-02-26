@@ -1,6 +1,7 @@
 package com.example.web.controller;
 
 import com.example.service.ConsignmentService;
+import com.example.service.RentService;
 import com.example.web.dto.CommonDto;
 import com.example.web.dto.ConsignmentDto;
 import com.example.web.dto.RentDto;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class BookController {
 
     private final ConsignmentService consignmentService;
+    private final RentService rentService;
 
 
     // 책 위탁하기
@@ -38,6 +40,7 @@ public class BookController {
     public ResponseEntity<?> rentBook(@PathVariable(name = "bookId") Long bookId) {
         // TODO 세션 구현
        Integer userId = 1;
+       rentService.rent(userId, bookId);
 
         return CommonDto.emptyResponse();
     }

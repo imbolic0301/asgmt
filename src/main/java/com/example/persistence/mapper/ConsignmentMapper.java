@@ -40,7 +40,7 @@ public interface ConsignmentMapper {
                     user_id
                     , book_id
                     , title
-                    , ISBN
+                    , isbn
                     , price
                     , created_datetime
                 ) VALUES (

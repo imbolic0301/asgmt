@@ -1,5 +1,6 @@
 package com.example.persistence.entity;
 
+import com.example.web.dto.RentDto;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +20,16 @@ import lombok.ToString;
 public class RentHistoryEntity {
     private Long seq;
     private Long bookId;
+    private String title;
     private Integer userId;
     private Integer price;
+
+    public static RentHistoryEntity from(RentDto.BookResponse book, Integer userId) {
+        return RentHistoryEntity.builder()
+                .bookId(book.getId())
+                .userId(userId)
+                .title(book.getTitle())
+                .price(book.getPrice())
+                .build();
+    }
 }
