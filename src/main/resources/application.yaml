@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: demo
+  profiles:
+    active: local
+  mvc:
+    static-path-pattern: /static
+    hidden-method:
+      filter:
+        enabled: true
+
