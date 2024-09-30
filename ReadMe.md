@@ -1,5 +1,10 @@
 # 마크다운 용
 
+## IDE 세팅
+1. 사용 IDE : IntelliJ IDEA Ultimate
+   1. gradle 의 jdk 버전을 17로 설정
+   2. Optimize imports on the fly 옵션 활성화
+
 ## 개념 정의
 
 1. 회원
