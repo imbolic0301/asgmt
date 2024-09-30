@@ -1,4 +1,4 @@
-package com.partimestudy.domain.user;
+package com.partimestudy.domain.user.web.controller;
 
 public class UserInfoController {
 
@@ -6,4 +6,5 @@ public class UserInfoController {
     public void getMyInfo() {
 
     }
+
 }
