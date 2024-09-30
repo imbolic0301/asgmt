@@ -9,3 +9,7 @@ spring:
       filter:
         enabled: true
 
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+    jdbc-type-for-null: null
