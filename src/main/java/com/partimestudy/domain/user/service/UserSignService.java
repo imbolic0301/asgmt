@@ -2,7 +2,10 @@ package com.partimestudy.domain.user.service;
 
 import com.partimestudy.domain.user.persistence.entity.UserEntity;
 import com.partimestudy.domain.user.persistence.mapper.UserSignMapper;
-import com.partimestudy.domain.user.web.dto.UserDto;
+import com.partimestudy.domain.user.web.dto.UserSignDto;
+import com.partimestudy.global.cipher.CipherCore;
+import com.partimestudy.global.jwt.SessionJwt;
+import com.partimestudy.global.web.exception.ServiceExceptionTypes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -16,27 +19,27 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserSignService {
 
     private final UserSignMapper userSignMapper;
+    private final UserTokenService userTokenService;
+    private final CipherCore cipherCore;
 
 
     @Transactional(readOnly = false, isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
-    public Object signUpBy(UserDto.SignUpRequest request) {
-        var entity = UserEntity.from(request);
-        if(Boolean.TRUE.equals(userSignMapper.isDuplicatedLoginId(request.loginId()))) {
-            throw new RuntimeException("중복 로그인 아이디 오류");
+    public SessionJwt signUpBy(UserSignDto.SignUpRequest request) throws Exception {
+        request.initCipheredPassword(cipherCore.encryptSha256(request.getPassword(), request.getLoginId()));
+        var newUser = UserEntity.from(request);
+        if(Boolean.TRUE.equals(userSignMapper.isDuplicatedLoginId(request.getLoginId()))) {
+            throw ServiceExceptionTypes.DUPLICATED_EMAIL_USER.toException();
         }
-        userSignMapper.createUserBy(entity);
-//        var token = userTokenMapper.createNewToken();
-//        return token;
-        return null;
+        userSignMapper.createUserBy(newUser);
+        return userTokenService.createNewSessionJwt(newUser);
     }
 
-    @Transactional(readOnly = true)
-    public Object signInBy(UserDto.SignInRequest request) {
-        UserEntity user = userSignMapper.getUserBySignIn(request);
-        if(user == null) throw new RuntimeException("유저 없음 오류");
-//        var token = userTokenMapper.createNewToken();
-//        return token;
-        return null;
+    @Transactional(readOnly = false, isolation = Isolation.REPEATABLE_READ, propagation = Propagation.REQUIRED, rollbackFor = Exception.class)
+    public SessionJwt signInBy(UserSignDto.SignInRequest request) throws Exception {
+        request.initCipheredPassword(cipherCore.encryptSha256(request.getPassword(), request.getLoginId()));
+        UserEntity existUser = userSignMapper.findUserBy(request);
+        if(existUser == null) throw ServiceExceptionTypes.NOT_FOUND_USER.toException();
+        return userTokenService.createNewSessionJwt(existUser);
     }
 
 }

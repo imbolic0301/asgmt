@@ -1,11 +1,13 @@
 package com.partimestudy.domain.user.persistence.mapper;
 
 import com.partimestudy.domain.user.persistence.entity.UserEntity;
-import com.partimestudy.domain.user.web.dto.UserDto;
+import com.partimestudy.domain.user.web.dto.UserSignDto;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Options;
 import org.apache.ibatis.annotations.Select;
 
+@Mapper
 public interface UserSignMapper {
     
     // 회원 가입으로 유저 생성
@@ -13,19 +15,19 @@ public interface UserSignMapper {
     @Insert("""
             INSERT INTO user (
                 login_id
-                , username
+                , user_name
                 , password
-            ) VALUES #{
+            ) VALUES (
                 #{loginId}
-                , #{username}
+                , #{userName}
                 , #{password}
-            }
+            )
             """)
     void createUserBy(UserEntity entity);
 
     // 로그인 아이디 중복 확인
     @Select("""
-            SELECT TRUE FROM user WHERE login_id = #{loginId} AND is_deleted = 0
+            SELECT TRUE FROM user WHERE login_id = #{loginId} AND is_del = 0
             """)
     Boolean isDuplicatedLoginId(String loginId);
 
@@ -34,8 +36,8 @@ public interface UserSignMapper {
             SELECT 
                 * 
             FROM user 
-            WHERE login_id = #{loginId} AND password = #{password} AND is_deleted = 0
+            WHERE login_id = #{loginId} AND password = #{password} AND is_del = 0
             """)
-    UserEntity getUserBySignIn(UserDto.SignInRequest request);
+    UserEntity findUserBy(UserSignDto.SignInRequest request);
     
 }

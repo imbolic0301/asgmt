@@ -6,9 +6,10 @@ import org.apache.ibatis.annotations.Select;
 
 @Mapper
 public interface UserMapper {
-
+    
+    // 회원 정보 조회
     @Select("""
-            SELECT * FROM user WHERE id = #{userId} AND is_Deleted = 0
+            SELECT * FROM user WHERE id = #{userId} AND is_del = 0
             """)
     UserEntity findUserById(Integer userId);
 }
