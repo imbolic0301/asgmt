@@ -1,5 +1,6 @@
 package com.partimestudy.domain.user.service;
 
+import com.partimestudy.domain.balance.service.UserBalanceService;
 import com.partimestudy.domain.user.persistence.entity.UserEntity;
 import com.partimestudy.domain.user.persistence.mapper.UserSignMapper;
 import com.partimestudy.domain.user.web.dto.UserSignDto;
@@ -20,6 +21,7 @@ public class UserSignService {
 
     private final UserSignMapper userSignMapper;
     private final UserTokenService userTokenService;
+    private final UserBalanceService userBalanceService;
     private final CipherCore cipherCore;
 
 
@@ -31,6 +33,7 @@ public class UserSignService {
             throw ServiceExceptionTypes.DUPLICATED_EMAIL_USER.toException();
         }
         userSignMapper.createUserBy(newUser);
+        userBalanceService.initNewUserBalance(newUser);
         return userTokenService.createNewSessionJwt(newUser);
     }
 
