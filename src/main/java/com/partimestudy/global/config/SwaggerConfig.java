@@ -1,6 +1,7 @@
 package com.partimestudy.global.config;
 
 import com.partimestudy.global.annotation.ResolvedParam;
+import com.partimestudy.global.jwt.SessionInfo;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.parameters.Parameter;
@@ -46,21 +47,23 @@ public class SwaggerConfig {
     @Bean
     public OperationCustomizer customizeOperations() {
         return (operation, handlerMethod) -> {
-            // ResolvedParam이 붙은 파라미터를 무시
-            if (handlerMethod instanceof HandlerMethod) {
+            if (handlerMethod != null) {
                 List<Parameter> parameters = operation.getParameters();
                 if (parameters != null) {
-                    parameters.removeIf(parameter -> isIgnoredParameter(handlerMethod));
+                    parameters.removeIf(parameter -> isIgnoredParameter(parameter, handlerMethod));
                 }
             }
             return operation;
         };
     }
 
-    // 추후 파라미터에 대한 값을 확인할 때 추가
-//    private boolean isIgnoredParameter(Parameter parameter, HandlerMethod handlerMethod) {
-    private boolean isIgnoredParameter(HandlerMethod handlerMethod) {
+    // ResolvedParam 어노테이션이 붙었으면서, SessionInfo 클래스인 변수가 있다면 스웨거에서 표기하지 않는다.
+    private boolean isIgnoredParameter(Parameter parameter, HandlerMethod handlerMethod) {
         return Arrays.stream(handlerMethod.getMethodParameters())
-                .anyMatch(methodParameter -> methodParameter.hasParameterAnnotation(ResolvedParam.class));
+                .filter(methodParameter -> methodParameter.hasParameterAnnotation(ResolvedParam.class))
+                .anyMatch(methodParameter ->
+                    methodParameter.getParameterType().equals(SessionInfo.class)
+                        && parameter.getName().equalsIgnoreCase(SessionInfo.class.getSimpleName())
+                );
     }
 }
