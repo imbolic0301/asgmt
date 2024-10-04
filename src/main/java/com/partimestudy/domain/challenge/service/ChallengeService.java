@@ -78,4 +78,5 @@ public class ChallengeService {
                         .toList();
         return CommonDto.ListResponse.from(list, pageInfo);
     }
+
 }

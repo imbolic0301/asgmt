@@ -2,6 +2,7 @@ package com.partimestudy.domain.challenge.web.controller;
 
 import com.partimestudy.domain.challenge.service.ChallengeService;
 import com.partimestudy.domain.challenge.web.dto.ChallengeDto;
+import com.partimestudy.domain.deposit.service.DepositService;
 import com.partimestudy.global.annotation.ResolvedParam;
 import com.partimestudy.global.jwt.SessionInfo;
 import com.partimestudy.global.web.dto.CommonDto;
@@ -27,7 +28,20 @@ import org.springframework.web.bind.annotation.*;
 public class ChallengeController {
 
     private final ChallengeService challengeService;
+    private final DepositService depositService;
 
+
+    @Operation(summary = "챌린지 참여 이력 조회", description = "유저가 참여한 챌린지 이력을 조회합니다.")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", content = @Content(schema = @Schema(implementation = ChallengeSwaggerDto.MyChallengeListResponse.class)))
+    })
+    @GetMapping("/my")
+    public ResponseEntity<?> getMyChallenges(@ParameterObject ChallengeDto.MyChallengePageRequest request,
+                                           @ResolvedParam SessionInfo sessionInfo) {
+        request.init();
+        var responseBody = depositService.findChallengesByConditions(sessionInfo, request);
+        return CommonDto.responseFrom(responseBody);
+    }
 
     @Operation(summary = "챌린지 목록 조회", description = "챌린지 목록을 조회합니다.")
     @ApiResponses({
@@ -40,7 +54,6 @@ public class ChallengeController {
         var responseBody = challengeService.findChallengesByConditions(request);
         return CommonDto.responseFrom(responseBody);
     }
-
 
     @Operation(summary = "챌린지 참여 신청", description = "챌린지 참여 신청을 처리합니다.")
     @ApiResponses({

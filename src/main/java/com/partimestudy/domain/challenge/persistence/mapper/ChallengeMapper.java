@@ -60,4 +60,14 @@ public interface ChallengeMapper {
             </script>
             """)
     void createSchedules(List<UserChallengeScheduleEntity> scheduleEntities);
+
+    @Select("""
+            SELECT
+            	schedule_date AS applyDate
+                , hour AS hour
+            FROM user_challenge_schedule
+            WHERE deposit_id = #{depositId}
+            ORDER BY schedule_date ASC
+            """)
+    List<ChallengeDto.ChallengeScheduleInfo> findSchedulesBy(Long depositId);
 }

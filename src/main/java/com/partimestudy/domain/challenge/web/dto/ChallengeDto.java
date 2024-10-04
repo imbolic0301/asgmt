@@ -21,6 +21,31 @@ public class ChallengeDto {
     @NoArgsConstructor
     @AllArgsConstructor
     @ToString
+    @Schema(description = "챌린지 참여 이력 조회 요청 파라미터")
+    public static class MyChallengePageRequest {
+        @Schema(description = "현재 페이지", example = "1", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+        private Integer page;
+        @Schema(description = "페이지당 조회 개수", example = "10", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+        private Integer showCount;
+//        @Schema(description = "검색 유형 - 활성화 여부(1 : 전체 조회, 2: 활성화만 조회, 3: 비활성화만 조회", example = "0", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+//        private Integer activeType;
+
+        public void init() {
+            this.page = (this.page == null || this.page < 1) ? 1 : this.page;
+            this.showCount = (this.showCount == null || this.showCount < 1) ? 10 : this.showCount;
+        }
+
+        public Integer getOffset() {
+            return (this.page - 1) * this.showCount;
+        }
+    }
+
+    @Getter
+    @Setter
+    @Builder(access = AccessLevel.PRIVATE)
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @ToString
     @Schema(description = "챌린지 목록 조회 요청 파라미터")
     public static class ChallengePageRequest {
         @Schema(description = "현재 페이지", example = "1", requiredMode = Schema.RequiredMode.NOT_REQUIRED)
@@ -86,6 +111,32 @@ public class ChallengeDto {
             }
         }
 
+    }
+
+
+    @ToString
+    @NoArgsConstructor(access = AccessLevel.PRIVATE)
+    @AllArgsConstructor(access = AccessLevel.PRIVATE)
+    @Builder(access = AccessLevel.PRIVATE)
+    @Getter
+    @Schema(description = "챌린지 주문 정보")
+    public static class MyChallengeInfo {
+        @Schema(description = "챌린지 아이디", example = "1")
+        private Long challengeId;
+        @Schema(description = "챌린지 이름", example = "원하는 일정으로 공부하기")
+        private String challengeName;
+        @Schema(description = "보증금", example = "123.0")
+        private BigDecimal depositAmount;
+        @Schema(description = "결제 금액", example = "123.0")
+        private BigDecimal payAmount;
+        @Schema(description = "활성화 여부 - ACTIVE, DEACTIVE", example = "ACTIVE")
+        private String status;
+        @Schema(description = "챌린지 일정")
+        private List<ChallengeScheduleInfo> challengeSchedules;
+
+        public void initSchedules(List<ChallengeScheduleInfo> schedules) {
+            this.challengeSchedules = schedules;
+        }
     }
 
     @NoArgsConstructor(access = AccessLevel.PRIVATE)
