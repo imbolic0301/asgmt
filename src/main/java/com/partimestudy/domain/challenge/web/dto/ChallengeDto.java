@@ -9,6 +9,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class ChallengeDto {
 
@@ -59,6 +61,19 @@ public class ChallengeDto {
             || this.challengeSchedules == null || this.challengeSchedules.isEmpty())
                 throw CustomExceptionTypes.INVALID_PARAMETER_FAILURE_MESSAGE.init("올바르지 않은 파라미터 양식입니다.");
             this.challengeSchedules.forEach(ChallengeScheduleInfo::validate);
+            if(hasDuplicateApplyDates(challengeSchedules)) {
+                throw CustomExceptionTypes.INVALID_PARAMETER_FAILURE_MESSAGE.init("올바르지 않은 파라미터 양식입니다.");
+            }
+        }
+
+        private static boolean hasDuplicateApplyDates(List<ChallengeScheduleInfo> schedules) {
+            // applyDate 값을 Set 으로 변환 후 size 비교
+            Set<LocalDate> uniqueDates = schedules.stream()
+                    .map(ChallengeScheduleInfo::getApplyDate)
+                    .collect(Collectors.toSet());
+
+            // 중복이 있는 경우 Set 크기가 List 크기보다 작음
+            return uniqueDates.size() != schedules.size();
         }
         
         // TODO 챌린지에 요일 설정 등이 있기 때문에, 상세 로직 구현시 요일에 대한 검증도 추가 필요
