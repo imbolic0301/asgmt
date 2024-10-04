@@ -49,7 +49,7 @@ public class ChallengeDto {
         private String challengeName;
         @Schema(description = "보증금", example = "123.0", requiredMode = Schema.RequiredMode.REQUIRED)
         private BigDecimal deposit;
-        @Schema(description = "챌린지 일정", requiredMode = Schema.RequiredMode.REQUIRED, implementation = ChallengeScheduleInfo.class)
+        @Schema(description = "챌린지 일정", requiredMode = Schema.RequiredMode.REQUIRED)
         private List<ChallengeScheduleInfo> challengeSchedules;
 
         public void validate() {
@@ -58,6 +58,17 @@ public class ChallengeDto {
             || this.deposit == null
             || this.challengeSchedules == null || this.challengeSchedules.isEmpty())
                 throw CustomExceptionTypes.INVALID_PARAMETER_FAILURE_MESSAGE.init("올바르지 않은 파라미터 양식입니다.");
+            this.challengeSchedules.forEach(ChallengeScheduleInfo::validate);
+        }
+        
+        // TODO 챌린지에 요일 설정 등이 있기 때문에, 상세 로직 구현시 요일에 대한 검증도 추가 필요
+        public void validateBy(ChallengeEntity challenge) {
+            if(this.deposit.compareTo(challenge.getDepositMin()) < 0) {
+                throw CustomExceptionTypes.INVALID_PARAMETER_FAILURE_MESSAGE.init("최소 보증금보다 적게 보증금을 걸 수 없습니다.");
+            }
+            if(challenge.getDepositMax().compareTo(this.deposit) < 0) {
+                throw CustomExceptionTypes.INVALID_PARAMETER_FAILURE_MESSAGE.init("최대 보증금보다 크게 보증금을 걸 수 없습니다.");
+            }
         }
 
     }

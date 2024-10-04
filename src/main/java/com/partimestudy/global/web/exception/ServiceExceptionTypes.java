@@ -35,7 +35,9 @@ public enum ServiceExceptionTypes implements CommonResponse {
     NOT_FOUND_USER(HttpStatus.BAD_REQUEST, "1201", "찾을 수 없는 회원입니다."),
     DUPLICATED_EMAIL_USER(HttpStatus.BAD_REQUEST, "1202", "중복된 로그인 아이디입니다."),
     // 포인트 관련 (1300 ~ )
-    LACK_OF_AVAILABLE_POINTS(HttpStatus.BAD_REQUEST, "1301", "잔고가 부족합니다."),
+    LACK_OF_AVAILABLE_DEPOSIT(HttpStatus.BAD_REQUEST, "1301", "잔고가 부족합니다."),
+    // 챌린지 관련 (1400 ~ )
+    CHALLENGE_CAN_ACTIVE_ONLY_ONE(HttpStatus.BAD_REQUEST, "1400", "하나의 챌린지만 참여 가능합니다."),
 
     // 외부 API 오류 코드 (6000 ~ )
     EMPTY_RESPONSE(HttpStatus.SERVICE_UNAVAILABLE, "6001", "외부 API 호출의 응답을 찾을 수 없습니다."),

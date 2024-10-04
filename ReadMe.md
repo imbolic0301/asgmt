@@ -136,12 +136,15 @@ INSERT INTO challenge (`id`,`title`,`deposit_min`,`deposit_max`,`status`,`create
 CREATE TABLE `user_challenge_schedule` (
                                            `id` bigint(20) NOT NULL AUTO_INCREMENT,
                                            `challenge_id` bigint(20) NOT NULL,
+                                           `deposit_id` bigint(20) NOT NULL,
                                            `schedule_date` date NOT NULL COMMENT '챌린지 스케줄 날짜',
                                            `hour` int(11) NOT NULL COMMENT '스케줄 시간 (시간 단위)',
-                                           `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                                           `created_at` datetime NOT NULL DEFAULT current_timestamp(),
                                            `updated_at` datetime DEFAULT NULL,
-                                           PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='유저별 챌린지 스케줄 테이블';
+                                           PRIMARY KEY (`id`),
+                                           KEY `deposit_idx` (`deposit_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='유저별 챌린지 스케줄 테이블';
+
 
 ```
 

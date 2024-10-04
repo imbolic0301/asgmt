@@ -1,7 +1,9 @@
 package com.partimestudy.domain.challenge.persistence.mapper;
 
 import com.partimestudy.domain.challenge.persistence.entity.ChallengeEntity;
+import com.partimestudy.domain.challenge.persistence.entity.UserChallengeScheduleEntity;
 import com.partimestudy.domain.challenge.web.dto.ChallengeDto;
+import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -37,5 +39,25 @@ public interface ChallengeMapper {
             WHERE status = 'ACTIVE'
             """)
     Integer countByConditions();
-
+    
+    // 챌린지 목록 저장
+    @Insert("""
+            <script>
+            INSERT INTO user_challenge_schedule (
+                challenge_id
+                , deposit_id
+                , schedule_date
+                , hour
+                , created_at
+            ) VALUES 
+            <foreach collection="scheduleEntities" item="e" separator=","> (
+                #{e.challengeId}
+                , #{e.depositId}
+                , #{e.scheduleDate}
+                , #{e.hour}
+                , NOW()
+            )</foreach>
+            </script>
+            """)
+    void createSchedules(List<UserChallengeScheduleEntity> scheduleEntities);
 }
