@@ -9,3 +9,14 @@ spring:
       filter:
         enabled: true
 
+# MyBatis 공통 설정
+mybatis:
+  configuration:
+    map-underscore-to-camel-case: true
+    jdbc-type-for-null: null
+    
+# 세션 변수
+session:
+  expire-sec:
+    access-token: 86400 # 60 * 60 * 24
+    refresh-token: 2592000 # 60 * 60 * 24 * 30
